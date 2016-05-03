@@ -1,42 +1,58 @@
 import ReactDOM from "react-dom"
 import React from "react"
-import App from "./components/App"
+import {ConnectedApp} from "./components/App"
 import {fromJS,Map,List} from "immutable"
+
+import {Provider} from "react-redux"
+
+import {createStore,applyMiddleware} from 'redux'
+import { logger ,socketMiddleware } from "./middleware"
+
+import rootReducer from "./reducer"
+import { setState, newMessage } from "./actionCreator"
+import { getInitialState, saveToStorage } from "./store"
 
 import {socket} from "./io"
 
+const createStoreWithMiddleware = applyMiddleware(
+    logger,
+    socketMiddleware(socket)
+)( createStore )
+
+const store = createStoreWithMiddleware( rootReducer, getInitialState() )
+
 socket.on("state",state => {
-    console.log( "getInitialState:", state )
+    store.dispatch(setState(state))
 })
+
+socket.on("message",message=>{
+    console.log("get message from server")
+    store.dispatch( newMessage( message,true ) )
+})
+
+
 // -----------------------------------------
 
-const fakeState = {
-    rooms:fromJS([
-        {id:"0", name:"room",owner:"eisneim"},
-        {id:"1", name:"room2",owner:"terry"}
-    ]),
-    currentRoom:"1",
-    username:"eisneim",
-    message:fromJS({
-        "1":[
-            {user:"eisneim",content:"react is cool",time:"23:33"},
-            {user:"terry",content:"so is Redux",time:"12:22"}
-        ]
-    }),
-}
+
 
 var $app = document.getElementById("app")
 
 function render() {
+    // const store = store.getState()
+
     ReactDOM.render(
-        <App
-            rooms={fakeState.rooms}
-            message={fakeState.message}
-            currentRoom={fakeState.currentRoom}
-            username={fakeState.username}
-        />,
+        <Provider store={store}>
+            <ConnectedApp/>
+        </Provider>,
         $app
     )
 }
 
 render()
+
+store.subscribe(()=>{
+    saveToStorage( store.getState() )
+})
+
+
+

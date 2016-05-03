@@ -3,6 +3,8 @@ import React,{ Component } from "react"
 import MessageList from "./MessageList"
 import InputBox from "./InputBox"
 import RoomList from "./RoomList"
+import {newMessage, switchRoom, addRoom, removeRoom} from "../actionCreator"
+
 
 class App extends Component {
     getCurrentRoomName(){
@@ -22,17 +24,31 @@ class App extends Component {
         return this.props.messages ?
             this.props.messages.get(this.props.currentRoom) :  []
     }
-            addRoom(){
 
-      }
+    addRoom(){
+        var name = prompt("房间名称")
+        if(!name) return alert("不能没有房间名称")
 
-      removeRoom(){
+        this.props.dispatch( addRoom({
+            name, owner: this.props.username
+        }) )
+    }
 
-      }
+    removeRoom(){
+        this.props.dispatch( switchRoom( ) )
 
-      sendMessage(message){
+        this.props.dispatch( removeRoom(
+            this.props.currentRoom, this.props.username
+        ) )
+    }
 
-      }
+    sendMessage(message){
+        this.props.dispatch( newMessage({
+            roomId:this.props.currentRoom,
+            user:this.props.username,
+            content: message
+        }) )
+    }
     render(){
         const { currentRoom, rooms, username, dispatch } = this.props
 
@@ -70,5 +86,18 @@ class App extends Component {
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import reactMixin from "react-mixin";
 reactMixin.onClass(App, PureRenderMixin )
+
+import { connect } from 'react-redux'
+
+function mapStateToProps( state ){
+    return {
+        rooms: state.get("rooms"),
+        currentRoom: state.get("currentRoom"),
+        username:state.get("username"),
+        messages:state.get("messages")
+    }
+}
+
+export const ConnectedApp = connect( mapStateToProps )(App)
 
 export default App
