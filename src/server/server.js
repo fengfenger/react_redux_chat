@@ -17,9 +17,9 @@ import listenWebSocket from "./io.js"
 const store = makeStore()
 listenWebSocket( io, store )
 
-app.get("/",(req,res)=>{
-	res.render("index")
-})
+import {indexCtrl} from "./controller"
+
+app.use(indexCtrl(store))
 
 http.listen(3000,()=>{
 	console.log('listening on port 3000')

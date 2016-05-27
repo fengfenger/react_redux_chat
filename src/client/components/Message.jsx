@@ -8,7 +8,8 @@ class Message extends Component {
         return (
             <li className={className+" clearfix"}>
                 <div className="message-inner">
-                    <p className="chat-username">{message.get("user")}
+                    <p className="chat-username">
+                        {message.get("user")}
                         <small>{message.get("time")}</small>
                     </p>
                     <p>{message.get("content")}</p>

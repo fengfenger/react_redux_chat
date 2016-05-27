@@ -40,3 +40,22 @@ Until arrow functions, every new function defined its own this value (a new obje
 function Person() { // The Person() constructor defines `this` as an instance of itself.   this.age = 0; setInterval(function growUp() { // In nonstrict mode, the growUp() function defines `this` // as the global object, which is different from the `this` // defined by the Person() constructor.   this.age++; }, 1000); } var p = new Person();
 
 
+
+
+英文文档 http://redux.js.org/
+
+中文文档http://camsong.github.io/redux-in-chinese/
+
+redux-thunk https://github.com/gaearon/redux-thunk
+react测试文档 https://facebook.github.io/react/docs/test-utils.html
+immutablejs https://facebook.github.io/immutable-js/docs/
+awesome-redux: https://github.com/xgrommx/awesome-redux
+react-router: https://github.com/rackt/react-router
+redux-devtools:  https://github.com/gaearon/redux-devtools
+
+
+博客: glexe.com
+微博:  weibo.com/eisneim
+知乎:  https://www.zhihu.com/people/eisneim
+
+
